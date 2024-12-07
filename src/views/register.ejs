@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register</title>
+    <link rel="stylesheet" href="styles/register.css" />
+  </head>
+  <body>
+    <div class="register-container">
+      <form class="register-form">
+        <h2>Register</h2>
+        <div class="form-group">
+          <p class="error" id="error"></p>
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Enter your username"
+            required
+            min="3"
+            max="20"
+            autocomplete="off"
+          />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+            min="5"
+            autocomplete="off"
+          />
+        </div>
+        <div class="form-group">
+          <p class="error" id="error-password"></p>
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+            min="8"
+          />
+        </div>
+        <div class="form-group">
+          <label for="confirm-password">Confirm Password</label>
+          <input
+            type="password"
+            id="confirm-password"
+            name="confirm-password"
+            placeholder="Confirm your password"
+            required
+            min="8"
+          />
+        </div>
+        <button type="submit" class="btn">Register</button>
+        <p class="login-link">
+          Already have an account? <a href="/login">Login</a>
+        </p>
+      </form>
+    </div>
+
+    <script>
+      const password = document.getElementById("password");
+      const confirmPassword = document.getElementById("confirm-password");
+      const form = document.querySelector(".register-form");
+
+      form?.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (password.value !== confirmPassword.value) {
+          document.getElementById("error").textContent =
+            "La contrase no debe ser la misma";
+        } else {
+          const jsonObject = {};
+          const formData = new FormData(form);
+          formData.delete("confirm-password");
+          formData.forEach((value, key) => {
+            jsonObject[key] = value;
+          });
+          try{
+            const res = await fetch("/register", {
+            method: "POST",
+            headers: {
+              "Content-type": "application/json",
+            },
+            body: JSON.stringify(jsonObject),
+          });
+
+          if(res.ok) {
+            window.location.href = '/';
+          }else {
+            document.getElementById('error').textContent = await res.text();
+          }
+          }catch(err){
+            console.error('Ha habido un error: ' + err);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

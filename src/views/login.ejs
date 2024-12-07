@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="styles/login.css" />
+  </head>
+  <body>
+    <div class="login-container">
+      <form class="login-form">
+        <h2>Login</h2>
+        <div class="form-group">
+          <p class="error" id="error"></p>
+          <label for="username">Username or password</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Enter your username or password"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+          />
+        </div>
+        <button type="submit" class="btn">Login</button>
+        <p class="register-link">
+          Don't have an account? <a href="/register">Sign up</a>
+        </p>
+      </form>
+    </div>
+    <script>
+      const password = document.getElementById("password");
+      const form = document.querySelector(".login-form");
+
+      form?.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const jsonObject = {};
+        const formData = new FormData(form);
+        formData.forEach((value, key) => {
+          jsonObject[key] = value;
+        });
+        try {
+          const res = await fetch("/login", {
+            method: "POST",
+            headers: {
+              "Content-type": "application/json",
+            },
+            body: JSON.stringify(jsonObject),
+          });
+
+
+          if (res.ok) {
+            window.location.href = "/";
+          } else {
+            document.getElementById("error").textContent = await res.text();
+          }
+        } catch (err) {
+          console.error("Ha habido un error: " + err);
+        }
+      });
+    </script>
+  </body>
+</html>
